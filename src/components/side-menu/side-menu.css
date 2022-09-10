@@ -1,12 +1,12 @@
-:root{
-    --item-color: rgba(0,0,0,.3)
+:root {
+  --item-color: rgba(0, 0, 0, 0.3);
 }
 
 .menu {
-    display: flex;
-    flex-shrink: 1;
+  display: flex;
+  flex-shrink: 1;
 }
 .menu-item {
-    color: var(--item-color);
-    padding: 1rem;
+  color: var(--item-color);
+  padding: 1rem;
 }
