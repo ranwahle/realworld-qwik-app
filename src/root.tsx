@@ -6,7 +6,7 @@ import { Header } from "./components/header/header";
 
 export default () => {
   return (
-    <html>
+    <QwikCity>
       <head>
         <meta charSet="utf-8" />
         <title>Qwik Realworld App</title>
@@ -23,12 +23,10 @@ export default () => {
         <link rel="stylesheet" href="//demo.productionready.io/main.css"></link>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <QwikCity>
-        <body>
-          <Header></Header>
-          <RouterOutlet />
-        </body>
-      </QwikCity>
-    </html>
+      <body>
+        <Header></Header>
+        <RouterOutlet />
+      </body>
+    </QwikCity>
   );
 };

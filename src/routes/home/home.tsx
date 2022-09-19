@@ -10,8 +10,7 @@ import { Tags } from "../../components/tags/tags";
 import "./home.css";
 import { FeedNavigation } from "../../components/feed-navigation/feed-navigation";
 import { NavItem } from "../../components/feed-navigation/nav-item";
-import { Article } from "../../components/article/article";
-
+import ArticlesList from "../../components/articles-list/articles-list";
 export const getTags = async () => {
   try {
     const response = await axios.get("https://api.realworld.io/api/tags");
@@ -22,9 +21,10 @@ export const getTags = async () => {
   }
 };
 
-export const getGeneralArticles = async () => {
+export const getGeneralArticles = async (tagName: string = "") => {
+  const articleUrl = `https://api.realworld.io/api/articles?limit=10&offset=0`;
   const response = await axios.get<{ articles: any }>(
-    "https://api.realworld.io/api/articles?limit=10&offset=0"
+    tagName ? `${articleUrl}&tag=${tagName}` : articleUrl
   );
   return response.data.articles.map((item: any) => ({
     ...item,
@@ -37,14 +37,21 @@ export const onFeedNavigationChange = async (feed: NavItem) => {
   console.log("articles", data);
 };
 
-export const Home = component$(async () => {
-  const state = useStore({ tags: ["tag"], articles: [] });
+export const onTagSelectedChange = async (tagName: string) => {
+  return getGeneralArticles(tagName);
+};
 
-  useClientEffect$(async () => {
-    if (!state.tags.length) {
-      state.tags = await getTags();
-    }
-  });
+export const Home = component$(async () => {
+  const state = useStore(
+    {
+      counter: { count: 0 },
+      tags: useStore([]),
+      articles: useStore([]),
+      selectedTag: "",
+    },
+    { recursive: true, reactive: true }
+  );
+
   const tags = await getTags();
   state.tags = tags;
 
@@ -55,23 +62,33 @@ export const Home = component$(async () => {
         <h1>Qwik</h1>
         <p>A place to share your knowledge about Qwik</p>
       </div>
+      <button onClick$={() => state.counter.count++}>
+        {" "}
+        {state.counter.count}
+      </button>
 
+      {state.articles.length}
       <div className="content-container">
         <div className="feed">
           <div>
             <FeedNavigation
-              tabs={[{ label: "Your Feed" }, { label: "Global Feed" }]}
+              tabs={[
+                { label: "Your Feed" },
+                { label: "Global Feed" },
+                { label: state.selectedTag || "None" },
+              ]}
               navigationChange$={(tab) => onFeedNavigationChange(tab)}
             ></FeedNavigation>
           </div>
-          <div class="articles-list">
-            {state.articles.map((article) => (
-              <Article article={article}></Article>
-            ))}
-          </div>
+          <ArticlesList articles={state.articles}></ArticlesList>
         </div>
         <div className="side-bar">
-          <Tags tags={state.tags}></Tags>
+          <Tags
+            tags={state.tags}
+            tagSelected$={(tag) => (state.selectedTag = tag)}
+          >
+            {" "}
+          </Tags>
         </div>
       </div>
     </div>
