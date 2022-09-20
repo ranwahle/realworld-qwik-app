@@ -1,17 +1,19 @@
 import {
   useStore,
   component$,
-  useWatch$,
-  useClientEffect$,
+  mutable,
+  useResource$,
+  Resource,
 } from "@builder.io/qwik";
-import { Header } from "../../components/header/header";
 import axios from "axios";
 import { Tags } from "../../components/tags/tags";
-import "./home.css";
 import { FeedNavigation } from "../../components/feed-navigation/feed-navigation";
 import { NavItem } from "../../components/feed-navigation/nav-item";
 import ArticlesList from "../../components/articles-list/articles-list";
-export const getTags = async () => {
+
+import "./home.css";
+
+export const getTags: () => Promise<string[]> = async () => {
   try {
     const response = await axios.get("https://api.realworld.io/api/tags");
     return response.data.tags;
@@ -37,59 +39,86 @@ export const onFeedNavigationChange = async (feed: NavItem) => {
   console.log("articles", data);
 };
 
-export const onTagSelectedChange = async (tagName: string) => {
-  return getGeneralArticles(tagName);
+export const onTagSelectedChange = async (
+  tagName: string,
+  state: any,
+  tabs: any[]
+) => {
+  state.selectedTag = tagName;
+  state.activeTab = tabs[2];
+  state.articles = await getGeneralArticles(tagName);
 };
 
-export const Home = component$(async () => {
-  const state = useStore(
-    {
-      counter: { count: 0 },
-      tags: useStore([]),
-      articles: useStore([]),
-      selectedTag: "",
-    },
-    { recursive: true, reactive: true }
-  );
-
+export const getStateData = async (state: any) => {
   const tags = await getTags();
+  const articles = await getGeneralArticles();
   state.tags = tags;
+  state.articles = articles;
+};
 
-  state.articles = await getGeneralArticles();
+export const Home = component$(() => {
+  const state = useStore({
+    count: 0,
+    tags: [],
+    articles: [],
+    selectedTag: "",
+    activeTab: undefined,
+  });
+  const tagsResource = useResource$(({ track, cleanup }) => {
+    const controller = new AbortController();
+    cleanup(() => controller.abort());
+    return getTags();
+  });
+
+  const articlesResource = useResource$(({ track, cleanup }) => {
+    const controller = new AbortController();
+    track(state, "selectedTag");
+    cleanup(() => controller.abort());
+    return getGeneralArticles(state.selectedTag);
+  });
+
+  const tabs = [
+    { label: "Your Feed" },
+    { label: "Global Feed" },
+    { label: state.selectedTag || "None" },
+  ];
+
+  // await getStateData(state);
+
   return (
     <div class="my-app p-20">
-      <div className="banner">
+      <div class="banner">
         <h1>Qwik</h1>
         <p>A place to share your knowledge about Qwik</p>
       </div>
-      <button onClick$={() => state.counter.count++}>
-        {" "}
-        {state.counter.count}
-      </button>
 
-      {state.articles.length}
-      <div className="content-container">
-        <div className="feed">
+      <div class="content-container">
+        <div class="feed">
           <div>
             <FeedNavigation
-              tabs={[
-                { label: "Your Feed" },
-                { label: "Global Feed" },
-                { label: state.selectedTag || "None" },
-              ]}
+              tabs={mutable(tabs)}
               navigationChange$={(tab) => onFeedNavigationChange(tab)}
+              activeTab={mutable(state.activeTab)}
             ></FeedNavigation>
           </div>
-          <ArticlesList articles={state.articles}></ArticlesList>
+          <Resource
+            value={articlesResource}
+            onResolved={(articles: any[]) => (
+              <ArticlesList articles={mutable(articles)}></ArticlesList>
+            )}
+          ></Resource>
         </div>
-        <div className="side-bar">
-          <Tags
-            tags={state.tags}
-            tagSelected$={(tag) => (state.selectedTag = tag)}
-          >
-            {" "}
-          </Tags>
-        </div>
+        <Resource
+          value={tagsResource}
+          onPending={() => <>Loading Tags</>}
+          onRejected={(error) => <>Error: {error.message}</>}
+          onResolved={(tags: string[]) => (
+            <Tags
+              tags={tags}
+              tagSelected$={(tag) => onTagSelectedChange(tag, state, tabs)}
+            ></Tags>
+          )}
+        ></Resource>
       </div>
     </div>
   );
