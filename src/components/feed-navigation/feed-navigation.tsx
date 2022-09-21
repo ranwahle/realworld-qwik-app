@@ -1,7 +1,6 @@
 import { component$, PropFunction, QRL, useStore } from "@builder.io/qwik";
 import { NavItem } from "./nav-item";
 import "./feed-navigation.css";
-import { callbackify } from "util";
 interface ComponentState {
   activeTab: NavItem | undefined;
 }
@@ -15,15 +14,17 @@ export const changeNavigation = (
   callback(nav);
 };
 export const FeedNavigation = component$(
-  (props: { tabs: NavItem[]; navigationChange$: QRL<(tab) => void> }) => {
+  (props: { tabs: NavItem[];  navigationChange$: QRL<(tab) => void>, 
+    activeTab?: NavItem }) => {
     const state: ComponentState = useStore({
-      activeTab: undefined,
+      activeTab: props.activeTab,
     });
 
+    console.log('active tab', state.activeTab)
     return (
       <ul class="nav-list">
         {props.tabs.map((tab) => (
-          <li class={tab !== state.activeTab ? "nav-item" : "nav-item active"}>
+          <li class={tab.label !== state.activeTab?.label ? "nav-item" : "nav-item active"}>
             <a
               onClick$={() =>
                 changeNavigation(state, tab, props.navigationChange$)

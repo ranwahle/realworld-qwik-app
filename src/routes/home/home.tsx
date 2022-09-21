@@ -1,18 +1,21 @@
 import {
   useStore,
   component$,
-  useWatch$,
-  useClientEffect$,
+  mutable,
+  useResource$,
+  Resource,
 } from "@builder.io/qwik";
-import { Header } from "../../components/header/header";
 import axios from "axios";
 import { Tags } from "../../components/tags/tags";
-import "./home.css";
 import { FeedNavigation } from "../../components/feed-navigation/feed-navigation";
 import { NavItem } from "../../components/feed-navigation/nav-item";
-import { Article } from "../../components/article/article";
+import ArticlesList from "../../components/articles-list/articles-list";
 
-export const getTags = async () => {
+import "./home.css";
+
+
+
+export const getTags: () => Promise<string[]> = async () => {
   try {
     const response = await axios.get("https://api.realworld.io/api/tags");
     return response.data.tags;
@@ -22,9 +25,10 @@ export const getTags = async () => {
   }
 };
 
-export const getGeneralArticles = async () => {
+export const getGeneralArticles = async (tagName: string = "") => {
+  const articleUrl = `https://api.realworld.io/api/articles?limit=10&offset=0`;
   const response = await axios.get<{ articles: any }>(
-    "https://api.realworld.io/api/articles?limit=10&offset=0"
+    tagName ? `${articleUrl}&tag=${tagName}` : articleUrl
   );
   return response.data.articles.map((item: any) => ({
     ...item,
@@ -37,42 +41,91 @@ export const onFeedNavigationChange = async (feed: NavItem) => {
   console.log("articles", data);
 };
 
-export const Home = component$(async () => {
-  const state = useStore({ tags: ["tag"], articles: [] });
+export const onSelectedTagChange = async (
+  tagName: string,
+  state: any,
+  tabs: any[]
+) => {
+  state.selectedTag = tagName;
+  tabs[2].label = tagName;
+  state.activeTab = tabs[2];
+  state.articles = await getGeneralArticles(tagName);
+};
 
-  useClientEffect$(async () => {
-    if (!state.tags.length) {
-      state.tags = await getTags();
-    }
-  });
+export const getStateData = async (state: any) => {
   const tags = await getTags();
+  const articles = await getGeneralArticles();
   state.tags = tags;
+  state.articles = articles;
+};
 
-  state.articles = await getGeneralArticles();
+export const Home = component$( () => {
+
+  const state = useStore({
+    count: 0,
+    tags: [],
+    articles: [],
+    selectedTag: "",
+    activeTab: undefined,
+  });
+  const tagsResource = useResource$(({track, cleanup}) => {
+    track(state, 'tags')
+
+    const controller = new AbortController();
+    cleanup(() => controller.abort());
+    return getTags();
+  } );
+
+  const articlesResource = useResource$(({track, cleanup}) => {
+    const controller = new AbortController();
+    track(state, 'selectedTag')
+    cleanup(() => controller.abort());
+    return getGeneralArticles(state.selectedTag);
+  })
+
+ 
+
+  const tabs = [
+    { label: "Your Feed" },
+    { label: "Global Feed" },
+    { label: state.selectedTag || "None" },
+  ];
+
+  
+  // await getStateData(state);
+
   return (
     <div class="my-app p-20">
-      <div className="banner">
+      <div class="banner">
         <h1>Qwik</h1>
         <p>A place to share your knowledge about Qwik</p>
       </div>
 
-      <div className="content-container">
-        <div className="feed">
+      <div class="content-container">
+        <div class="feed">
           <div>
             <FeedNavigation
-              tabs={[{ label: "Your Feed" }, { label: "Global Feed" }]}
+              tabs={mutable(tabs)}
               navigationChange$={(tab) => onFeedNavigationChange(tab)}
+              activeTab={mutable(state.activeTab)}
             ></FeedNavigation>
           </div>
-          <div class="articles-list">
-            {state.articles.map((article) => (
-              <Article article={article}></Article>
-            ))}
-          </div>
+          <Resource value={articlesResource}
+          onResolved={(articles: any[]) =>  <ArticlesList articles={mutable(articles)}></ArticlesList> }
+          ></Resource>
+          
         </div>
-        <div className="side-bar">
-          <Tags tags={state.tags}></Tags>
-        </div>
+        <Resource value={tagsResource}
+        onPending={() => <>Loading Tags</>}
+        onRejected={(error) => <>Error: {error.message}</>}
+        onResolved={(tags: string[]) =>  <Tags
+          tags={tags}
+          tagSelected$={(tag) => onSelectedTagChange(tag, state, tabs)}
+        ></Tags>}
+        >
+        
+        </Resource>
+        
       </div>
     </div>
   );
