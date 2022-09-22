@@ -13,8 +13,6 @@ import ArticlesList from "../../components/articles-list/articles-list";
 
 import "./home.css";
 
-
-
 export const getTags: () => Promise<string[]> = async () => {
   try {
     const response = await axios.get("https://api.realworld.io/api/tags");
@@ -36,19 +34,22 @@ export const getGeneralArticles = async (tagName: string = "") => {
   }));
 };
 
-export const onFeedNavigationChange = async (feed: NavItem) => {
-  const data = await getGeneralArticles();
-  console.log("articles", data);
+export const onFeedNavigationChange = async (
+  feed: string,
+  state: {
+    tabs: NavItem[];
+    activeTab: NavItem | undefined;
+    selectedTag: string;
+  }
+) => {
+  state.activeTab = state.tabs.find((tab) => tab.label === feed);
+  state.selectedTag = feed === state.tabs[2].label ? feed : "";
 };
 
-export const onSelectedTagChange = async (
-  tagName: string,
-  state: any,
-  tabs: any[]
-) => {
+export const onSelectedTagChange = async (tagName: string, state: any) => {
   state.selectedTag = tagName;
-  tabs[2].label = tagName;
-  state.activeTab = tabs[2];
+  state.tabs[2].label = tagName;
+  state.activeTab = state.tabs[2];
   state.articles = await getGeneralArticles(tagName);
 };
 
@@ -59,39 +60,36 @@ export const getStateData = async (state: any) => {
   state.articles = articles;
 };
 
-export const Home = component$( () => {
+export const Home = component$(() => {
+  const tabs = [
+    { label: "Your Feed" },
+    { label: "Global Feed" },
+    { label: "" },
+  ];
 
   const state = useStore({
     count: 0,
     tags: [],
     articles: [],
     selectedTag: "",
+    tabs,
     activeTab: undefined,
   });
-  const tagsResource = useResource$<string[]>(({track, cleanup}) => {
-    track(state, 'tags')
+  const tagsResource = useResource$<string[]>(({ track, cleanup }) => {
+    track(state, "tags");
 
     const controller = new AbortController();
     cleanup(() => controller.abort());
     return getTags();
-  } );
+  });
 
-  const articlesResource = useResource$(({track, cleanup}) => {
+  const articlesResource = useResource$(({ track, cleanup }) => {
     const controller = new AbortController();
-    track(state, 'selectedTag')
+    track(state, "selectedTag");
     cleanup(() => controller.abort());
     return getGeneralArticles(state.selectedTag);
-  })
+  });
 
- 
-
-  const tabs = [
-    { label: "Your Feed" },
-    { label: "Global Feed" },
-    { label: state.selectedTag || "None" },
-  ];
-
-  
   // await getStateData(state);
 
   return (
@@ -105,27 +103,29 @@ export const Home = component$( () => {
         <div class="feed">
           <div>
             <FeedNavigation
-              tabs={mutable(tabs)}
-              navigationChange$={(tab) => onFeedNavigationChange(tab)}
+              tabs={mutable(state.tabs.map((tab) => tab.label))}
+              navigationChange$={(tab) => onFeedNavigationChange(tab, state)}
               activeTab={mutable(state.activeTab)}
             ></FeedNavigation>
           </div>
-          <Resource value={articlesResource}
-          onResolved={(articles: any[]) =>  <ArticlesList articles={mutable(articles)}></ArticlesList> }
+          <Resource
+            value={articlesResource}
+            onResolved={(articles: any[]) => (
+              <ArticlesList articles={mutable(articles)}></ArticlesList>
+            )}
           ></Resource>
-          
         </div>
-        <Resource value={tagsResource}
-        onPending={() => <>Loading Tags</>}
-        onRejected={(error) => <>Error: {error.message}</>}
-        onResolved={(tags: string[]) =>  <Tags
-          tags={tags}
-          tagSelected$={(tag) => onSelectedTagChange(tag, state, tabs)}
-        ></Tags>}
-        >
-        
-        </Resource>
-        
+        <Resource
+          value={tagsResource}
+          onPending={() => <>Loading Tags</>}
+          onRejected={(error) => <>Error: {error.message}</>}
+          onResolved={(tags: string[]) => (
+            <Tags
+              tags={tags}
+              tagSelected$={(tag) => onSelectedTagChange(tag, state)}
+            ></Tags>
+          )}
+        ></Resource>
       </div>
     </div>
   );

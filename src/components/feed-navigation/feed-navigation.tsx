@@ -2,36 +2,45 @@ import { component$, QRL, useStore } from "@builder.io/qwik";
 import { NavItem } from "./nav-item";
 import "./feed-navigation.css";
 interface ComponentState {
-  activeTab: NavItem | undefined;
+  activeTab: string | undefined;
 }
 
 export const changeNavigation = (
   state: ComponentState,
-  nav: NavItem,
-  callback: (tab: NavItem) => void
+  nav: string,
+  callback: (tab: string) => void
 ) => {
   state.activeTab = nav;
   callback(nav);
 };
 export const FeedNavigation = component$(
-  (props: { tabs: NavItem[];  navigationChange$: QRL<(tab) => void>, 
-    activeTab?: NavItem }) => {
-    const state: ComponentState = useStore({
-      activeTab: props.activeTab || props.tabs[0],
-    });
+  (props: {
+    tabs: string[];
+    navigationChange$: QRL<(tab: string) => void>;
+    activeTab?: NavItem;
+  }) => {
+    const state: ComponentState = useStore(
+      {
+        activeTab: props.activeTab?.label || props.tabs[0],
+      },
+      { recursive: true }
+    );
 
-    console.log('active tab', state.activeTab)
     return (
       <ul class="nav-list">
         {props.tabs.map((tab) => (
-          <li class={tab.label !== state.activeTab?.label ? "nav-item" : "nav-item active"}>
+          <li
+            class={
+              tab !== props.activeTab?.label ? "nav-item" : "nav-item active"
+            }
+          >
             <a
               onClick$={() =>
                 changeNavigation(state, tab, props.navigationChange$)
               }
             >
               {" "}
-              {tab.label}
+              {tab}
             </a>
           </li>
         ))}
