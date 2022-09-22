@@ -1,4 +1,4 @@
-import { component$, PropFunction, QRL, useStore } from "@builder.io/qwik";
+import { component$, QRL, useStore } from "@builder.io/qwik";
 import { NavItem } from "./nav-item";
 import "./feed-navigation.css";
 interface ComponentState {
@@ -17,7 +17,7 @@ export const FeedNavigation = component$(
   (props: { tabs: NavItem[];  navigationChange$: QRL<(tab) => void>, 
     activeTab?: NavItem }) => {
     const state: ComponentState = useStore({
-      activeTab: props.activeTab,
+      activeTab: props.activeTab || props.tabs[0],
     });
 
     console.log('active tab', state.activeTab)

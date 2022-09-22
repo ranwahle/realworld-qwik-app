@@ -68,7 +68,7 @@ export const Home = component$( () => {
     selectedTag: "",
     activeTab: undefined,
   });
-  const tagsResource = useResource$(({track, cleanup}) => {
+  const tagsResource = useResource$<string[]>(({track, cleanup}) => {
     track(state, 'tags')
 
     const controller = new AbortController();
