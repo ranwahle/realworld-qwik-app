@@ -1,27 +1,8 @@
 import { component$ } from "@builder.io/qwik";
+import { formatDate } from "~/common/date-utils";
+import { ArticleData } from "~/model/article-data";
+import { ArticleTagsList } from "../article-tags-list/article-tags-list";
 import "./article.css";
-
-export interface AuthorData {
-  imageUrl: string;
-  username: string;
-}
-
-export interface ArticleData {
-  author: AuthorData;
-  tagList: string[];
-  title: string;
-  description: string;
-  createdAt: string;
-  favoritesCount: number;
-}
-
-export const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString("default", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-};
 
 export const Article = component$((props: { article: ArticleData }) => {
   const { article } = props;
@@ -46,14 +27,12 @@ export const Article = component$((props: { article: ArticleData }) => {
           <i class="ion-heart"></i> {article.favoritesCount}
         </button>
       </div>
-      <div class="article-title">{article.title}</div>
+      <div class="article-title">
+        <a href={`/article/${article.slug}`}> {article.title}</a>
+      </div>
       <div class="description">{article.description}</div>
       <div class="read-more">Read mode...</div>
-      <ul class="tags-list">
-        {article.tagList.map((tag) => (
-          <li class="tag-list-item">{tag}</li>
-        ))}
-      </ul>
+      <ArticleTagsList tagsList={article.tagList}></ArticleTagsList>
     </div>
   );
 });

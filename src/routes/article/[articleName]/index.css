@@ -1,0 +1,10 @@
+:root {
+  --comment-padding: 5rem;
+}
+
+.container {
+  padding-right: var(--container-padding);
+  padding-left: var(--container-padding);
+  flex: 0 0 100%;
+  max-width: 100%;
+}
