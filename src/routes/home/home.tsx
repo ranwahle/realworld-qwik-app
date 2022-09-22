@@ -51,14 +51,11 @@ export const onSelectedTagChange = async (tagName: string, state: any) => {
   state.selectedTag = tagName;
   state.tabs[2].label = `#${tagName}`;
   state.activeTab = state.tabs[2];
-  state.articles = await getGeneralArticles(tagName);
 };
 
 export const getStateData = async (state: any) => {
   const tags = await getTags();
-  const articles = await getGeneralArticles();
   state.tags = tags;
-  state.articles = articles;
 };
 
 export const Home = component$(() => {
