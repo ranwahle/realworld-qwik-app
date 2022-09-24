@@ -40,8 +40,8 @@ img {
 }
 
 .article-title {
-  font-weight: 600 !important;
-  font-size: 1.5rem !important;
+  font-weight: 600;
+  font-size: 1.5rem;
   margin-bottom: 3px;
 }
 

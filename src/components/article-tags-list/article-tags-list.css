@@ -8,13 +8,12 @@
 
 .tag-list-item {
   font-weight: 300;
-  font-size: 0.8rem !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
+  font-size: 0.8rem;
+  padding-top: 0;
+  padding-bottom: 0;
   border: solid 1px var(--meta-color);
   border-radius: 10px;
   display: inline-block;
-  padding: 1rem;
   margin-right: 0.5rem;
   color: var(--meta-color);
 }

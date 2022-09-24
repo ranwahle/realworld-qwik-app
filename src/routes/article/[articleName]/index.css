@@ -5,7 +5,7 @@
 .container {
   padding-right: var(--container-padding);
   padding-left: var(--container-padding);
-  width: 75;
+  width: 75%;
 }
 
 .meta-container {
