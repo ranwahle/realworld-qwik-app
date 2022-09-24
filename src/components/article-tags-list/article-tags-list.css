@@ -9,6 +9,7 @@
 .tag-list-item {
   font-weight: 300;
   font-size: 0.8rem;
+  padding: 1rem;
   padding-top: 0;
   padding-bottom: 0;
   border: solid 1px var(--meta-color);

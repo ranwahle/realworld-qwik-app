@@ -40,9 +40,8 @@ export default component$(() => {
           <div>
             <ArticleHeader {...article}></ArticleHeader>
 
-            <ArticleTagsList tagsList={article.tagList}></ArticleTagsList>
-
             <div class="container">
+              <ArticleTagsList tagsList={article.tagList}></ArticleTagsList>
               <div class="meta-container">
                 <ArticleMeta article={article}></ArticleMeta>
               </div>
