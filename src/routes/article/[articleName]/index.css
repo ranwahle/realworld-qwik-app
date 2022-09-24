@@ -5,6 +5,9 @@
 .container {
   padding-right: var(--container-padding);
   padding-left: var(--container-padding);
-  flex: 0 0 100%;
-  max-width: 100%;
+  width: 75;
+}
+
+.meta-container {
+  margin-bottom: 2rem;
 }

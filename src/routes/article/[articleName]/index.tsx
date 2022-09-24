@@ -6,6 +6,7 @@ import { Comment } from "./comment/comment";
 import { ArticleHeader } from "./article-header/article-header";
 import "./index.css";
 import { ArticleTagsList } from "~/components/article-tags-list/article-tags-list";
+import { ArticleMeta } from "./article-meta/article-meta";
 
 export default component$(() => {
   const location = useLocation();
@@ -20,6 +21,7 @@ export default component$(() => {
       `https://api.realworld.io/api/articles/${state.name}`
     );
     const article = await articleResponse.data.article;
+    article.author.imageUrl = article.author.image;
     const commentsResponse = await axios.get(
       `https://api.realworld.io/api/articles/${state.name}/comments`
     );
@@ -38,11 +40,12 @@ export default component$(() => {
           <div>
             <ArticleHeader {...article}></ArticleHeader>
 
-            <p>{article.description}</p>
-            <p>{article.body}</p>
-
             <ArticleTagsList tagsList={article.tagList}></ArticleTagsList>
+
             <div class="container">
+              <div class="meta-container">
+                <ArticleMeta article={article}></ArticleMeta>
+              </div>
               {article.comments.map((comment: CommentData) => {
                 return <Comment {...comment}></Comment>;
               })}

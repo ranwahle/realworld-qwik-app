@@ -4,7 +4,7 @@ import { CommentData } from "~/model/article-data";
 export const Comment = component$((comment: CommentData) => {
   return (
     <div class="card">
-      {comment.body}
+      <p> {comment.body}</p>
       <div class="card-footer">
         {comment.author.username}
         <img src={comment.author.imageUrl}></img>

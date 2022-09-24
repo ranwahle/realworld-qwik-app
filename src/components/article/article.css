@@ -1,7 +1,3 @@
-:root {
-  --meta-color: #bbb;
-}
-
 .article-container {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   padding: 1.5rem 0;
@@ -20,12 +16,6 @@ img {
   position: relative;
   font-weight: 300;
   gap: 0.5rem;
-}
-
-.date {
-  color: var(--meta-color);
-  font-size: 0.8rem;
-  display: block;
 }
 
 .author {
