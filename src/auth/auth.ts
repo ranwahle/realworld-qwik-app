@@ -20,4 +20,11 @@ export const getUser = async () => {
   }
 };
 
-export const getAuthToken = () => `Token ${localStorage.getItem("token")}`;
+export const getAuthToken = () => {
+  try {
+    return `Token ${localStorage.getItem("token")}`;
+  } catch {
+    // In case localStorage is not defiend, i.e server side {
+    return null;
+  }
+};
