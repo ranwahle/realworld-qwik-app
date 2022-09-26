@@ -1,7 +1,6 @@
 import { component$, useClientEffect$, useStore } from "@builder.io/qwik";
 import { getUser, UserData } from "~/auth/auth";
 import "./side-menu.css";
-import { getUser } from "../../auth/auth";
 
 export const SideMenu = component$((props: { user: UserData }) => {
   return (
