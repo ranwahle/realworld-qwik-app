@@ -1,5 +1,6 @@
 import { component$, useStore } from "@builder.io/qwik";
 import axios from "axios";
+import { storeToken } from "~/auth/auth";
 import { BASE_URL } from "~/common/api";
 
 import "./index.css";
@@ -15,13 +16,12 @@ export const signUp = () => {
   });
   signuppromise.then((res) => {
     const token = res.data.user.token;
-    localStorage.setItem("token", token);
+    storeToken(token);
     console.log("res", res);
     if (token) {
       window.location.href = "/";
     }
   });
-  console.log("state", credentials);
   return false;
 };
 export default component$(() => {
