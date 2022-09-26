@@ -66,3 +66,8 @@ export const getAuthToken = () => {
     return null;
   }
 };
+export const saveTempCookie = (token: string) => {
+  tempToken = token;
+  console.log("token", token);
+  setCookie("token", token);
+};
