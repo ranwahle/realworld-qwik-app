@@ -17,7 +17,6 @@ export const signUp = () => {
   signuppromise.then((res) => {
     const token = res.data.user.token;
     storeToken(token);
-    console.log("res", res);
     if (token) {
       window.location.href = "/";
     }
