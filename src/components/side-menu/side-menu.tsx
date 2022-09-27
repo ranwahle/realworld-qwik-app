@@ -23,13 +23,13 @@ export const SideMenu = component$((props: { user: UserData }) => {
       ) : (
         <>
           <div class="menu-item">
-            <a href="/settings">
+            <a href="/settings" class="authenticated">
               <i class="ion-gear-a"></i>
               Settings
             </a>
           </div>
           <div className="menu-item">
-            <a href="/editor">
+            <a href="/editor" class="authenticated">
               <i class="ion-compose"></i> New Article
             </a>
           </div>
