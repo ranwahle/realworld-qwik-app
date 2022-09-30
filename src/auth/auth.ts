@@ -33,9 +33,9 @@ export const getCookies: (cookiesString?: string) => {
     cookiesString = document.cookie;
   }
   const cookeisArray = cookiesString?.split(";") || [];
-  const cookiesObj = cookeisArray.reduce((obj, item) => {
+  const cookiesObj = cookeisArray.reduce((obj: any, item) => {
     const [key, value]: string[] = item.split("=");
-    obj[key] = value;
+    obj[key.trim()] = value;
     return obj;
   }, {});
 
@@ -47,12 +47,12 @@ export const getCookie = (key: string) => {
   return cookies[key];
 };
 
-export const setCookie = (key: string, value: string, responseObj?: any) => {
+export const setCookie = (key: string, value: string) => {
   try {
     document.cookie = `${key}=${value}`;
   } catch {
     // in case you a re on server side - do noting
-    console.error("We are on server side", key, value);
+    // console.error("We are on server side", key, value);
   }
 };
 
