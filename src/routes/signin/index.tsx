@@ -12,7 +12,6 @@ export const submitUserData = (evt: any) => {
     window.location.href = "/";
   });
   evt.preventDefault();
-  // window.location.href = '/';
   return false;
 };
 
