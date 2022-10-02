@@ -9,11 +9,31 @@ export const storeToken = (token: string) => {
 };
 
 export interface UserData {
+  bio: string;
   username: string;
   image: string;
+  email: string;
 }
 
-export const getUser: () => UserData | Promise<UserData> = async () => {
+export const updateUser = (user: Partial<UserData>) => {
+  delete user.username;
+  return axios.put(
+    `${BASE_URL}user`,
+    { user },
+    {
+      headers: {
+        authorization: getAuthToken(),
+      },
+    }
+  );
+};
+
+export const logOut = () => {
+  saveTempCookie("");
+  localStorage.removeItem("token");
+};
+
+export const getUser: () => Promise<UserData> = async () => {
   try {
     const response = await axios.get(`${BASE_URL}user`, {
       headers: {
