@@ -1,4 +1,10 @@
-import { component$, useOnDocument, $ } from "@builder.io/qwik";
+import {
+  component$,
+  useOnDocument,
+  $,
+  useClientEffect$,
+  useOn,
+} from "@builder.io/qwik";
 import { login } from "~/auth/auth";
 import "~/global.css";
 
@@ -8,21 +14,25 @@ export const submitUserData = (evt: any) => {
     email: form.querySelector("[name='email']")!.value,
     password: form.querySelector("[name='password']")!.value,
   };
-  login(data).then(() => {
-    window.location.href = "/";
-  });
+  import("~/auth/auth")
+    .then((auth) => {
+      return auth.login(data);
+    })
+    .then(() => {
+      window.location.href = "/";
+    });
   evt.preventDefault();
   return false;
 };
 
 export default component$(() => {
-  useOnDocument(
-    "load",
-    $(() => {
+  useClientEffect$(() => {
+    setTimeout(() => {
       const form = document.querySelector("form");
       form!.addEventListener("submit", submitUserData);
-    })
-  );
+    });
+  });
+
   return (
     <>
       <div class="container">
