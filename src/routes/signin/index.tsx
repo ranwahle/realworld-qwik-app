@@ -1,11 +1,4 @@
-import {
-  component$,
-  useOnDocument,
-  $,
-  useClientEffect$,
-  useOn,
-} from "@builder.io/qwik";
-import { login } from "~/auth/auth";
+import { component$, useClientEffect$ } from "@builder.io/qwik";
 import "~/global.css";
 
 export const submitUserData = (evt: any) => {
