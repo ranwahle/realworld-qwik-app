@@ -73,7 +73,6 @@ export const submitArticleData = (
     })
     .catch((err: any) => {
       const { errors } = err.response.data;
-      console.log("error", errors);
       state.errors = errors;
     });
 
