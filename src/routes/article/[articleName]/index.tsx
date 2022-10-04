@@ -29,7 +29,6 @@ export const postComment = $((state: any, body: string) => {
     .then(() => {
       state.commentChanged = true;
     });
-  console.log("new comment", body);
 });
 
 export default component$(async () => {
