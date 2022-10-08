@@ -6,7 +6,6 @@
   },
   "private": true,
   "scripts": {
-    "start": "npm run dev",
     "build": "qwik build",
     "build.client": "vite build",
     "build.preview": "npm run build.client && vite build --ssr src/entry.preview.tsx",

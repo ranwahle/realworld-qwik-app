@@ -16,17 +16,15 @@ export const Article = component$(
         <div class="article-container">
           <ArticleMeta
             showFollowUser={showFollowUser}
-            article={mutable(article)}
-            authenticated={mutable(authenticated)}
+            article={article}
+            authenticated={authenticated}
           ></ArticleMeta>
           <div class="article-title">
             <a href={`/article/${article.slug}`}> {article.title}</a>
           </div>
           <div class="description">{article.description}</div>
           <div class="read-more">Read mode...</div>
-          <ArticleTagsList
-            tagsList={mutable(article.tagList)}
-          ></ArticleTagsList>
+          <ArticleTagsList tagsList={article.tagList}></ArticleTagsList>
         </div>
       </div>
     );
