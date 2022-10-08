@@ -119,7 +119,7 @@ export default component$(() => {
         <button>Publish Article</button>
       </form>
       <ArticleTagsList
-        tagsList={mutable(state.tags)}
+        tagsList={state.tags}
         onDelete$={(tag) => deleteTag(tag, state)}
       ></ArticleTagsList>
     </div>

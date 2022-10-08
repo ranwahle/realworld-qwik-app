@@ -97,7 +97,7 @@ export default component$(() => {
                 <FollowUser
                   user={profile}
                   followingChanged={followingChanged}
-                  following={mutable(profile.following)}
+                  following={profile.following}
                 ></FollowUser>
               </>
             );
@@ -125,8 +125,8 @@ export default component$(() => {
 
             return (
               <ArticlesList
-                articles={mutable(articles)}
-                authenticated={mutable(authenticated)}
+                articles={articles}
+                authenticated={authenticated}
               ></ArticlesList>
             );
           }}
