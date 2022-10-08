@@ -31,7 +31,7 @@ export const postComment = $((state: any, body: string) => {
     });
 });
 
-export default component$(async () => {
+export default component$<Promise<any>>(async () => {
   const location = useLocation();
   const state = useStore({
     name: location.params.articleName,
@@ -39,8 +39,7 @@ export default component$(async () => {
   });
   const authenticated = !!getAuthToken();
   const articleResource = useResource$(async ({ track, cleanup }) => {
-    track(state, "name");
-    track(state, "commentChanged");
+    track(() => ({ name: state.name, commentChanged: state.commentChanged }));
     const controller = new AbortController();
     cleanup(() => controller.abort());
 

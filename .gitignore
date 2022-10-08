@@ -3,6 +3,7 @@
 /lib
 /lib-types
 /server
+/resources
 
 # Development
 node_modules
@@ -36,3 +37,6 @@ lerna-debug.log*
 # Yarn
 .yarn/*
 !.yarn/releases
+
+# Cloudflare
+functions/**/*.js
