@@ -1,10 +1,4 @@
-import {
-  component$,
-  useStore,
-  $,
-  mutable,
-  useClientEffect$,
-} from "@builder.io/qwik";
+import { component$, useStore, $, useClientEffect$ } from "@builder.io/qwik";
 import axios from "axios";
 import { getAuthToken } from "~/auth/auth";
 import { BASE_URL } from "~/common/api";
