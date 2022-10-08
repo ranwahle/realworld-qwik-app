@@ -1,8 +1,4 @@
-import {
-  QwikCity,
-  RouterOutlet,
-  ServiceWorkerRegister,
-} from "@builder.io/qwik-city";
+import { QwikCity, RouterOutlet } from "@builder.io/qwik-city";
 
 import "./global.css";
 import { RouterHead } from "./components/RouterHead/RouterHead";
@@ -31,7 +27,7 @@ export default () => {
       </head>
       <body>
         <RouterOutlet />
-        <ServiceWorkerRegister />
+        {/* <ServiceWorkerRegister /> */}
       </body>
     </QwikCity>
   );
