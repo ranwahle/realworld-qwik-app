@@ -5,7 +5,7 @@ import { Header } from "../components/header/header";
 
 interface RequestHandlerObj {
   request: {
-    headers: string[];
+    headers: any;
   };
   url: any;
   params: any;

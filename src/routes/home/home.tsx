@@ -1,10 +1,4 @@
-import {
-  useStore,
-  component$,
-  mutable,
-  useResource$,
-  Resource,
-} from "@builder.io/qwik";
+import { useStore, component$, useResource$, Resource } from "@builder.io/qwik";
 import axios from "axios";
 import { Tags } from "../../components/tags/tags";
 import { FeedNavigation } from "../../components/feed-navigation/feed-navigation";
@@ -15,7 +9,7 @@ import "~/global.css";
 import "./home.css";
 import { BASE_URL } from "~/common/api";
 import { getAuthToken } from "~/auth/auth";
-import { RequestHandler } from "@builder.io/qwik-city";
+import { ArticleData } from "~/model/article-data";
 
 export const getTags: () => Promise<string[]> = async () => {
   try {
@@ -31,7 +25,7 @@ export const getFeed = async () => {
   const feedUrl = `${BASE_URL}articles/feed`;
   try {
     const response = await axios.get(feedUrl, {
-      headers: { authorization: getAuthToken() },
+      headers: { authorization: getAuthToken()! },
     });
     return response.data.articles.map((item: any) => ({
       ...item,
@@ -48,7 +42,7 @@ export const getGeneralArticles = async (tagName: string = "") => {
     tagName ? `${articleUrl}&tag=${tagName}` : articleUrl,
     {
       headers: {
-        authorization: getAuthToken(),
+        authorization: getAuthToken()!,
       },
     }
   );
@@ -64,6 +58,7 @@ export const onFeedNavigationChange = (
     tabs: NavItem[];
     activeTab: NavItem | undefined;
     selectedTag: string;
+    personalFeed: any;
   }
 ) => {
   const tagCandidate = feed.startsWith("#") ? feed.substring(1) : "";
@@ -93,7 +88,7 @@ export const Home = component$(() => {
     personalFeed: [],
     selectedTag: "",
     tabs,
-    activeTab: undefined,
+    activeTab: tabs[1],
   });
 
   const tagsResource = useResource$<string[]>(({ track, cleanup }) => {
@@ -103,7 +98,7 @@ export const Home = component$(() => {
     return getTags();
   });
 
-  const articlesResource = useResource$(({ track, cleanup }) => {
+  const articlesResource = useResource$<ArticleData[]>(({ track, cleanup }) => {
     const controller = new AbortController();
     track(state, "selectedTag");
     cleanup(() => controller.abort());
@@ -121,9 +116,9 @@ export const Home = component$(() => {
         <div class="feed">
           <div>
             <FeedNavigation
-              tabs={mutable(state.tabs.map((tab) => tab.label))}
+              tabs={state.tabs.map((tab) => tab.label)}
               navigationChange$={(tab) => onFeedNavigationChange(tab, state)}
-              activeTab={mutable(state.activeTab)}
+              activeTab={state.activeTab}
             ></FeedNavigation>
           </div>
           {state.activeTab?.label !== "Your Feed" ? (
@@ -131,15 +126,15 @@ export const Home = component$(() => {
               value={articlesResource}
               onResolved={(articles: any[]) => (
                 <ArticlesList
-                  articles={mutable(articles)}
-                  authenticated={mutable(authenticated)}
+                  articles={articles}
+                  authenticated={authenticated}
                 ></ArticlesList>
               )}
             ></Resource>
           ) : (
             <ArticlesList
-              articles={mutable(state.personalFeed)}
-              authenticated={mutable(authenticated)}
+              articles={state.personalFeed}
+              authenticated={authenticated}
             ></ArticlesList>
           )}
         </div>

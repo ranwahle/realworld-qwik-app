@@ -7,7 +7,7 @@ export const Comment = component$((comment: CommentData) => {
     <div class="card">
       <p> {comment.body}</p>
       <div class="card-footer">
-        <img src={comment.author.imageUrl}></img>
+        <img src={comment.author.image}></img>
         <div>{comment.author.username}</div>
         <div>{formatDate(comment.updatedAt)}</div>
       </div>

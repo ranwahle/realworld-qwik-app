@@ -1,4 +1,4 @@
-import { component$, mutable } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 import { formatDate } from "~/common/date-utils";
 import { ArticleData } from "~/model/article-data";
 import "~/global.css";
@@ -14,14 +14,10 @@ export const ArticleMeta = component$(
     showFavoriteText?: boolean;
   }) => {
     const { article, showFavoriteText } = props;
-    console.log("article", article);
     return (
       <div class="article-meta">
         <a href={`/profile/${article.author.username}`}>
-          <img
-            src={article.author.imageUrl || article.author.image}
-            alt={article.author.username}
-          ></img>
+          <img src={article.author.image} alt={article.author.username}></img>
         </a>
         <div>
           <div>
@@ -38,14 +34,14 @@ export const ArticleMeta = component$(
           <>
             {props.showFollowUser ? (
               <FollowUser
-                user={mutable(article.author)}
-                following={mutable(article.author.following)}
+                user={article.author}
+                following={article.author.following}
               ></FollowUser>
             ) : (
               <></>
             )}
             <FavoriteArtice
-              article={mutable(article)}
+              article={article}
               showText={showFavoriteText}
             ></FavoriteArtice>
           </>

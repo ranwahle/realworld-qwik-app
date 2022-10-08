@@ -22,7 +22,7 @@ export const updateUser = (user: Partial<UserData>) => {
     { user },
     {
       headers: {
-        authorization: getAuthToken(),
+        authorization: getAuthToken()!,
       },
     }
   );
@@ -49,7 +49,7 @@ export const getUser: () => Promise<UserData> = async () => {
   try {
     const response = await axios.get(`${BASE_URL}user`, {
       headers: {
-        authorization: getAuthToken(),
+        authorization: getAuthToken()!,
       },
     });
     return response.data.user;

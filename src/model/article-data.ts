@@ -1,5 +1,5 @@
 export interface AuthorData {
-  imageUrl: string;
+  image: string;
   username: string;
   following: boolean;
 }
@@ -17,8 +17,8 @@ export interface ArticleData {
 
 export interface CommentData {
   id: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   body: string;
   author: AuthorData;
 }

@@ -42,9 +42,9 @@ export const submitUserData = async (evt: Event) => {
 export default component$(async () => {
   useOnDocument(
     "load",
-    $((evt: any) => {
+    $(() => {
       const form = document.querySelector("form");
-      form.addEventListener("submit", submitUserData);
+      form!.addEventListener("submit", submitUserData);
     })
   );
 
