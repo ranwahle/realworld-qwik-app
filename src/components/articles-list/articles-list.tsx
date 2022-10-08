@@ -13,9 +13,9 @@ export default component$(
           ? "No articles here... yet"
           : props.articles.map((article) => (
               <Article
-                article={mutable(article)}
+                article={article}
                 showFollowUser={props.showFollowUser}
-                authenticated={mutable(props.authenticated)}
+                authenticated={props.authenticated}
               ></Article>
             ))}
       </div>
