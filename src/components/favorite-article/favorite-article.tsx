@@ -16,7 +16,7 @@ export const markAsFavorite = async (article: ArticleData) => {
   const response = await axios.post(
     `${BASE_URL}articles/${article.slug}/favorite`,
     {},
-    { headers: { authorization: getAuthToken() } }
+    { headers: { authorization: getAuthToken()! } }
   );
   const { favoritesCount } = response.data.article;
   article.favoritesCount = favoritesCount;
@@ -33,7 +33,7 @@ export const FavoriteArtice = component$(
         <i class="ion-heart"></i>
         {showText ? <>{favoriteText(article)}</> : <></>}
         <span class="counter">
-          {favoriteCount(article.favoritesCount, showText)}
+          {favoriteCount(article.favoritesCount, !!showText)}
         </span>
       </button>
     );

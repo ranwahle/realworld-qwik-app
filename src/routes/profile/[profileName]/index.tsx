@@ -21,8 +21,8 @@ type Tab = { label: string; type: TabType };
 export const getArticles = async (queryType: TabType, profileName: string) => {
   const query = queryType === "Authored" ? "author" : "favorited";
   const url = `${BASE_URL}articles?${query}=${profileName}`;
-  const response = await axios.get<ArticleData[]>(url, {
-    headers: { authorization: getAuthToken() },
+  const response = await axios.get<{ articles: ArticleData[] }>(url, {
+    headers: { authorization: getAuthToken()! },
   });
   return response.data.articles;
 };
@@ -34,7 +34,7 @@ export const onFeedNavigationChange = (tab: Tab, state: any) => {
 export const getProfile = async (profileName: string) => {
   const url = `${BASE_URL}profiles/${profileName}`;
   const response = await axios.get(url, {
-    headers: { authorization: getAuthToken() },
+    headers: { authorization: getAuthToken()! },
   });
   return response.data.profile;
 };
@@ -107,14 +107,14 @@ export default component$(() => {
       <div class="container">
         <div>
           <FeedNavigation
-            tabs={mutable(state.tabs.map((tab: Tab) => tab.label))}
+            tabs={state.tabs.map((tab: Tab) => tab.label)}
             navigationChange$={(label) =>
               onFeedNavigationChange(
-                tabs.find((t) => t.label === label),
+                tabs.find((t) => t.label === label)!,
                 state
               )
             }
-            activeTab={mutable(state.activeTab)}
+            activeTab={state.activeTab}
           ></FeedNavigation>
         </div>
 

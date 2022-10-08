@@ -24,7 +24,7 @@ export const postComment = $((state: any, body: string) => {
       {
         comment: { body },
       },
-      { headers: { authorization: getAuthToken() } }
+      { headers: { authorization: getAuthToken()! } }
     )
     .then(() => {
       state.commentChanged = true;
@@ -53,7 +53,7 @@ export default component$(async () => {
       `${BASE_URL}articles/${state.name}/comments`,
       {
         headers: {
-          authorization: getAuthToken(),
+          authorization: getAuthToken()!,
         },
       }
     );
@@ -89,7 +89,9 @@ export default component$(async () => {
                 {authenticated ? (
                   <CommentForm
                     user={user}
-                    postComment={$((comment) => postComment(state, comment))}
+                    postComment={$((comment: any) =>
+                      postComment(state, comment)
+                    )}
                   ></CommentForm>
                 ) : (
                   <>

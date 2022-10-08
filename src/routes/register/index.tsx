@@ -6,9 +6,15 @@ import { BASE_URL } from "~/common/api";
 import "./index.css";
 
 export const signUp = () => {
-  const username = document.querySelector('input[name="username"]')?.value;
-  const password = document.querySelector('input[name="password"]')?.value;
-  const email = document.querySelector('input[name="email"]')?.value;
+  const username = document.querySelector<HTMLInputElement>(
+    'input[name="username"]'
+  )?.value;
+  const password = document.querySelector<HTMLInputElement>(
+    'input[name="password"]'
+  )?.value;
+  const email = document.querySelector<HTMLInputElement>(
+    'input[name="email"]'
+  )?.value;
 
   const credentials = { username, email, password };
   const signupPromise = axios.post(`${BASE_URL}/users`, {
