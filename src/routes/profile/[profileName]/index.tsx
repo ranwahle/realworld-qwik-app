@@ -1,6 +1,5 @@
 import {
   component$,
-  mutable,
   Resource,
   ResourceReturn,
   useResource$,
@@ -61,12 +60,21 @@ export default component$(() => {
 
   //   const profile = await getProfile(state.profileName);
 
-  const articlesResource: ResourceReturn<ArticleData[]> = useResource$(
-    ({ track, cleanup }) => {
+  const authoredArticleResource: ResourceReturn<ArticleData[]> = useResource$(
+    ({ cleanup }) => {
       const controller = new AbortController();
-      track(state);
+
       cleanup(() => controller.abort());
-      return getArticles(state.activeTab.type, state.profileName);
+      return getArticles("Authored", state.profileName);
+    }
+  );
+
+  const favoritedArticlesResource: ResourceReturn<ArticleData[]> = useResource$(
+    ({ cleanup }) => {
+      const controller = new AbortController();
+
+      cleanup(() => controller.abort());
+      return getArticles("Favorited", state.profileName);
     }
   );
 
@@ -77,7 +85,6 @@ export default component$(() => {
   const authenticated = !!getAuthToken();
 
   const followingChanged = $((newValue: boolean) => {
-    console.log("naewValue", newValue);
     state.followingMainUser = newValue;
   });
 
@@ -97,7 +104,7 @@ export default component$(() => {
                 <FollowUser
                   user={profile}
                   followingChanged={followingChanged}
-                  following={mutable(profile.following)}
+                  following={profile.following}
                 ></FollowUser>
               </>
             );
@@ -119,15 +126,38 @@ export default component$(() => {
         </div>
 
         <Resource
-          value={articlesResource}
+          value={favoritedArticlesResource}
           onResolved={(articles: any[]) => {
-            console.log("articles", articles);
-
             return (
-              <ArticlesList
-                articles={mutable(articles)}
-                authenticated={mutable(authenticated)}
-              ></ArticlesList>
+              <div
+                style={{
+                  display:
+                    state.activeTab.type === "Favorited" ? "block" : "none",
+                }}
+              >
+                <ArticlesList
+                  articles={articles}
+                  authenticated={authenticated}
+                ></ArticlesList>
+              </div>
+            );
+          }}
+        ></Resource>
+        <Resource
+          value={authoredArticleResource}
+          onResolved={(articles: any[]) => {
+            return (
+              <div
+                style={{
+                  display:
+                    state.activeTab.type === "Authored" ? "block" : "none",
+                }}
+              >
+                <ArticlesList
+                  articles={articles}
+                  authenticated={authenticated}
+                ></ArticlesList>
+              </div>
             );
           }}
         ></Resource>

@@ -47,8 +47,6 @@ export const FollowUser = component$(
       return changeFollowingState(user, false);
     });
 
-    console.log("follw user", user.following);
-
     return state.following ? (
       <button
         class="btn btn-sm action-btn btn-outline-secondary"
