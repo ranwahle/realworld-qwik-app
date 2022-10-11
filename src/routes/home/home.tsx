@@ -10,19 +10,29 @@ import { Tags } from "../../components/tags/tags";
 import { FeedNavigation } from "../../components/feed-navigation/feed-navigation";
 import { NavItem } from "../../components/feed-navigation/nav-item";
 import ArticlesList from "../../components/articles-list/articles-list";
-
 import "~/global.css";
 import "./home.css";
 import { BASE_URL } from "~/common/api";
 import { getAuthToken } from "~/auth/auth";
 import { ArticleData } from "~/model/article-data";
 
+// export const getTags: () => Promise<string[]> = async () => {
+//   try {
+//     const response = await axios.get(`${BASE_URL}/tags`);
+//     return response.data.tags;
+//   } catch (err) {
+//     console.error("Error getting tags", err);
+//     return err;
+//   }
+// };
+
 export const getTags: () => Promise<string[]> = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/tags`);
-    return response.data.tags;
+    const response = await fetch(`${BASE_URL}/tags`);
+    const data = (await response.json()) as { tags: string[] };
+    return data.tags;
   } catch (err) {
-    console.error("Error getting tags");
+    console.error("Error getting tags", err);
     return [];
   }
 };

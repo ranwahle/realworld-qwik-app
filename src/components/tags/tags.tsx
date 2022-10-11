@@ -6,6 +6,7 @@ export const Tags = component$(
     tags: string[];
     tagSelected$: (name: string) => Promise<void>;
   }) => {
+    const { tagSelected$ } = props;
     return (
       <div className="tags-container">
         <p>Popular tags</p>
@@ -13,7 +14,7 @@ export const Tags = component$(
           {props.tags.map((tag) => (
             <a
               href="javascript:void(0)"
-              onClick$={() => props.tagSelected$(tag)}
+              onClick$={() => tagSelected$(tag)}
               className="tag-chip"
             >
               {tag}
