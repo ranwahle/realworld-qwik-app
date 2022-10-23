@@ -1,4 +1,10 @@
-import { useStore, component$, useResource$, Resource } from "@builder.io/qwik";
+import {
+  useStore,
+  component$,
+  useResource$,
+  Resource,
+  $,
+} from "@builder.io/qwik";
 import axios from "axios";
 import { Tags } from "../../components/tags/tags";
 import { FeedNavigation } from "../../components/feed-navigation/feed-navigation";
@@ -21,7 +27,7 @@ export const getTags: () => Promise<string[]> = async () => {
   }
 };
 
-export const getFeed = async () => {
+export const getFeed: () => Promise<ArticleData[]> = async () => {
   const feedUrl = `${BASE_URL}articles/feed`;
   try {
     const response = await axios.get(feedUrl, {
@@ -63,7 +69,9 @@ export const onFeedNavigationChange = (
 ) => {
   const tagCandidate = feed.startsWith("#") ? feed.substring(1) : "";
   state.activeTab = state.tabs.find((tab) => tab.label === feed);
-  getFeed().then((feed) => (state.personalFeed = feed));
+  getFeed().then((feed) => {
+    state.personalFeed = feed;
+  });
   state.selectedTag = tagCandidate;
 };
 
@@ -81,26 +89,41 @@ export const Home = component$(() => {
   ];
 
   const authenticated = !!getAuthToken();
-  const state = useStore({
-    count: 0,
-    tags: [],
-    articles: [],
-    personalFeed: [],
-    selectedTag: "",
-    tabs,
-    activeTab: tabs[1],
+  const state = useStore(
+    {
+      count: 0,
+      tags: [],
+      articles: [],
+      personalFeed: [],
+      selectedTag: "",
+      tabs,
+      activeTab: tabs[1],
+    },
+    { recursive: true }
+  );
+
+  const articlesStateChanged = $(() => {
+    state.count++;
   });
 
-  const tagsResource = useResource$<string[]>(({ track, cleanup }) => {
-    track(state, "tags");
+  const tagsResource = useResource$<string[]>(({ cleanup }) => {
     const controller = new AbortController();
     cleanup(() => controller.abort());
     return getTags();
   });
 
+  const personalFeedResource = useResource$<ArticleData[]>(
+    ({ cleanup, track }) => {
+      const controller = new AbortController();
+      track(() => ({ count: state.count, selectedTag: state.selectedTag }));
+      cleanup(() => controller.abort());
+      return getFeed();
+    }
+  );
+
   const articlesResource = useResource$<ArticleData[]>(({ track, cleanup }) => {
     const controller = new AbortController();
-    track(state, "selectedTag");
+    track(() => ({ count: state.count, selectedTag: state.selectedTag }));
     cleanup(() => controller.abort());
     return getGeneralArticles(state.selectedTag);
   });
@@ -128,19 +151,30 @@ export const Home = component$(() => {
                 <ArticlesList
                   articles={articles}
                   authenticated={authenticated}
+                  articlesStateChanged={articlesStateChanged}
                 ></ArticlesList>
               )}
             ></Resource>
           ) : (
-            <ArticlesList
-              articles={state.personalFeed}
-              authenticated={authenticated}
-            ></ArticlesList>
+            <Resource
+              value={personalFeedResource}
+              onResolved={(articles: any[]) => (
+                <ArticlesList
+                  articles={articles}
+                  authenticated={authenticated}
+                  articlesStateChanged={articlesStateChanged}
+                ></ArticlesList>
+              )}
+            ></Resource>
           )}
         </div>
         <Resource
           value={tagsResource}
-          onRejected={(error) => <>Error: {error.message}</>}
+          onRejected={(error) => (
+            <>
+              Error: {error.message} {error.stackTrace}
+            </>
+          )}
           onResolved={(tags: string[]) => (
             <Tags
               tags={tags}

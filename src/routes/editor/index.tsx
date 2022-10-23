@@ -1,10 +1,4 @@
-import {
-  component$,
-  useStore,
-  $,
-  mutable,
-  useClientEffect$,
-} from "@builder.io/qwik";
+import { component$, useStore, $, useClientEffect$ } from "@builder.io/qwik";
 import axios from "axios";
 import { getAuthToken } from "~/auth/auth";
 import { BASE_URL } from "~/common/api";
@@ -65,7 +59,7 @@ export const submitArticleData = (
       `${BASE_URL}articles`,
       { article },
       {
-        headers: { authorization: getAuthToken() },
+        headers: { authorization: getAuthToken()! },
       }
     )
     .then(() => {
@@ -119,7 +113,7 @@ export default component$(() => {
         <button>Publish Article</button>
       </form>
       <ArticleTagsList
-        tagsList={mutable(state.tags)}
+        tagsList={state.tags}
         onDelete$={(tag) => deleteTag(tag, state)}
       ></ArticleTagsList>
     </div>

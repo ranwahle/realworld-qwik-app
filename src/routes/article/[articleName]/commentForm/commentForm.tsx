@@ -7,7 +7,6 @@ export const submitComment = (
   evt: SubmitEvent,
   postComment: (body: string) => void
 ) => {
-  console.log("submit", evt);
   const form = evt.target as HTMLElement;
   evt.preventDefault();
   const body = form.querySelector<HTMLInputElement>('[name="comment"]')!.value;

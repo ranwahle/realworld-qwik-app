@@ -1,3 +1,4 @@
 .btn-outline-primary {
   font-size: 1rem;
+  display: flex;
 }

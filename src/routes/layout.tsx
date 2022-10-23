@@ -2,6 +2,7 @@ import { component$, Slot } from "@builder.io/qwik";
 import { RequestHandler } from "@builder.io/qwik-city";
 import { getCookies, getUser, saveTempCookie, UserData } from "~/auth/auth";
 import { Header } from "../components/header/header";
+export let user: UserData;
 
 interface RequestHandlerObj {
   request: {
@@ -18,10 +19,10 @@ export const onGet: RequestHandler<any> = async (args: RequestHandlerObj) => {
   const cookiesObj = getCookies(request.headers.get("cookie"));
   const token = cookiesObj.token;
   saveTempCookie(token);
+  user = await getUser();
 };
 
-export const Layout = component$(async () => {
-  const user: UserData = await getUser();
+export const Layout = component$(() => {
   return (
     <>
       <Header user={user} />

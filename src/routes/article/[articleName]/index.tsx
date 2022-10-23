@@ -5,7 +5,7 @@ import {
   useStore,
   $,
 } from "@builder.io/qwik";
-import { useLocation } from "@builder.io/qwik-city";
+import { RequestHandler, useLocation } from "@builder.io/qwik-city";
 import axios from "axios";
 import { CommentData } from "~/model/article-data";
 import { Comment } from "./comment/comment";
@@ -14,8 +14,13 @@ import "./index.css";
 import { ArticleTagsList } from "~/components/article-tags-list/article-tags-list";
 import { ArticleMeta } from "./article-meta/article-meta";
 import { BASE_URL } from "~/common/api";
-import { getAuthToken, getUser } from "~/auth/auth";
+import { getAuthToken, getUser, UserData } from "~/auth/auth";
 import { CommentForm } from "./commentForm/commentForm";
+
+export let currentUser: UserData;
+export const onGet: RequestHandler<any> = async () => {
+  currentUser = await getUser();
+};
 
 export const postComment = $((state: any, body: string) => {
   axios
@@ -31,7 +36,7 @@ export const postComment = $((state: any, body: string) => {
     });
 });
 
-export default component$(async () => {
+export default component$(() => {
   const location = useLocation();
   const state = useStore({
     name: location.params.articleName,
@@ -39,8 +44,8 @@ export default component$(async () => {
   });
   const authenticated = !!getAuthToken();
   const articleResource = useResource$(async ({ track, cleanup }) => {
-    track(state, "name");
-    track(state, "commentChanged");
+    track(() => state.name);
+    track(() => state.commentChanged);
     const controller = new AbortController();
     cleanup(() => controller.abort());
 
@@ -64,7 +69,6 @@ export default component$(async () => {
     return article;
   });
 
-  const user = await getUser();
   return (
     <>
       <Resource
@@ -88,7 +92,7 @@ export default component$(async () => {
                 </div>
                 {authenticated ? (
                   <CommentForm
-                    user={user}
+                    user={currentUser}
                     postComment={$((comment: any) =>
                       postComment(state, comment)
                     )}
