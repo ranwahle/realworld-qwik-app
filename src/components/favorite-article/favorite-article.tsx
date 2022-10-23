@@ -12,19 +12,25 @@ export const favoriteCount = (count: number, withBraces: boolean) => {
 export const FavoriteArtice = (props: {
   article: ArticleData;
   showText?: boolean;
-  markAsFavorite: QRL<(article: ArticleData) => Promise<void>>;
+  markAsFavorite?: QRL<(article: ArticleData) => Promise<void>>;
 }) => {
   const { article, showText, markAsFavorite } = props;
   return (
-    <button
-      class="btn btn-sm btn-outline-primary"
-      onClick$={async () => await markAsFavorite(article)}
-    >
-      <i class="ion-heart"></i>
-      {showText ? <>{favoriteText(article)}</> : <></>}
-      <span class="counter">
-        {favoriteCount(article.favoritesCount, !!showText)}
-      </span>
-    </button>
+    <>
+      {markAsFavorite ? (
+        <button
+          class="btn btn-sm btn-outline-primary"
+          onClick$={async () => await markAsFavorite(article)}
+        >
+          <i class="ion-heart"></i>
+          {showText ? <>{favoriteText(article)}</> : <></>}
+          <span class="counter">
+            {favoriteCount(article.favoritesCount, !!showText)}
+          </span>
+        </button>
+      ) : (
+        <></>
+      )}
+    </>
   );
 };

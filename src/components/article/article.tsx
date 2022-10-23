@@ -1,7 +1,4 @@
-import { component$, $, useSignal, useStore, QRL } from "@builder.io/qwik";
-import axios from "axios";
-import { getAuthToken } from "~/auth/auth";
-import { BASE_URL } from "~/common/api";
+import { component$, QRL } from "@builder.io/qwik";
 import { ArticleData } from "~/model/article-data";
 import { ArticleMeta } from "~/routes/article/[articleName]/article-meta/article-meta";
 import { ArticleTagsList } from "../article-tags-list/article-tags-list";
@@ -12,7 +9,7 @@ export const Article = component$(
     article: ArticleData;
     authenticated: boolean;
     showFollowUser?: boolean;
-    markAsFavorite: QRL<(article: ArticleData) => void>;
+    markAsFavorite: QRL<(article: ArticleData) => Promise<void>>;
   }) => {
     const { article, authenticated, showFollowUser, markAsFavorite } = props;
     return (

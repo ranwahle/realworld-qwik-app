@@ -11,7 +11,7 @@ export const ArticleMeta = (props: {
   authenticated?: boolean;
   showFollowUser?: boolean;
   showFavoriteText?: boolean;
-  markAsFavorite: QRL<(article: ArticleData) => void>;
+  markAsFavorite?: QRL<(article: ArticleData) => Promise<void>>;
 }) => {
   const { article, showFavoriteText } = props;
   const { author } = article;
@@ -41,11 +41,15 @@ export const ArticleMeta = (props: {
           ) : (
             <></>
           )}
-          <FavoriteArtice
-            article={article}
-            showText={showFavoriteText}
-            markAsFavorite={props.markAsFavorite}
-          ></FavoriteArtice>
+          {props.markAsFavorite ? (
+            <FavoriteArtice
+              article={article}
+              showText={showFavoriteText}
+              markAsFavorite={props.markAsFavorite!}
+            ></FavoriteArtice>
+          ) : (
+            <></>
+          )}
         </>
       ) : (
         <></>

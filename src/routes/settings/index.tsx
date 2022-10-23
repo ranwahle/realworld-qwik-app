@@ -6,10 +6,16 @@ import {
   useStore,
 } from "@builder.io/qwik";
 import axios from "axios";
+import { RequestHandler } from "express";
 import { getUser, logOut, updateUser, UserData } from "~/auth/auth";
 import "~/global.css";
 import "./index.css";
 
+export let user: UserData;
+
+export const onGet: RequestHandler<any> = async () => {
+  user = await getUser();
+};
 export const doLogOut = () => {
   logOut();
   window.location.href = "/";
@@ -39,7 +45,7 @@ export const submitUserData = async (evt: Event) => {
   return false;
 };
 
-export default component$(async () => {
+export default component$(() => {
   useOnDocument(
     "load",
     $(() => {
@@ -48,7 +54,6 @@ export default component$(async () => {
     })
   );
 
-  const user = await getUser();
   return (
     <>
       <div className="contianer">
