@@ -2,7 +2,6 @@
 /dist
 /lib
 /lib-types
-/server
 
 # Development
 node_modules
