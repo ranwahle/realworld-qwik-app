@@ -6,13 +6,11 @@ import netlifyEdge from "@netlify/vite-plugin-netlify-edge";
 
 export default defineConfig(() => {
   return {
-    plugins: [
-      qwikCity(),
-      qwikVite({
-        ssr: { outDir: "netlify/edge-functions/entry.netlify-edge" },
-      }),
-      tsconfigPaths(),
-      netlifyEdge({ functionName: "entry.netlify-edge" }),
-    ],
+    plugins: [qwikCity(), qwikVite(), tsconfigPaths()],
+    preview: {
+      headers: {
+        "Cache-Control": "public, max-age=600",
+      },
+    },
   };
 });

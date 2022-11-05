@@ -1,11 +1,4 @@
-import {
-  $,
-  component$,
-  useClientEffect$,
-  useOnDocument,
-  useStore,
-} from "@builder.io/qwik";
-import axios from "axios";
+import { $, component$, useOnDocument } from "@builder.io/qwik";
 import { RequestHandler } from "express";
 import { getUser, logOut, updateUser, UserData } from "~/auth/auth";
 import "~/global.css";

@@ -6,21 +6,20 @@ import { ArticleTagsList } from "~/components/article-tags-list/article-tags-lis
 import "~/global.css";
 import "./index.css";
 
-export const onTagsKeyDown = $(
-  (evt: KeyboardEvent, state: { tags: string[] }) => {
-    if (evt.key !== "Enter") {
-      return;
-    }
-    const input = evt.target as HTMLInputElement;
-    const { value } = input;
-    if (!value || state.tags.includes(value)) {
-      return;
-    }
-    state.tags = [...state.tags, value];
-    input.value = "";
-    evt.preventDefault();
+export const onTagsKeyDown = $((evt: any, state: { tags: string[] }) => {
+  const keyboardEvent = evt as KeyboardEvent;
+  if (keyboardEvent.key !== "Enter") {
+    return;
   }
-);
+  const input = evt.target as HTMLInputElement;
+  const { value } = input;
+  if (!value || state.tags.includes(value)) {
+    return;
+  }
+  state.tags = [...state.tags, value];
+  input.value = "";
+  evt.preventDefault();
+});
 
 export const deleteTag = (tag: string, state: { tags: string[] }) => {
   state.tags = [...state.tags.filter((t) => t !== tag)];

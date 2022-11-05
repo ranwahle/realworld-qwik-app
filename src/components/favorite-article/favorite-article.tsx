@@ -1,4 +1,4 @@
-import { QRL, $ } from "@builder.io/qwik";
+import { QRL } from "@builder.io/qwik";
 import { ArticleData } from "~/model/article-data";
 import "./favorite-article.css";
 export const favoriteText = (article: ArticleData) => {
