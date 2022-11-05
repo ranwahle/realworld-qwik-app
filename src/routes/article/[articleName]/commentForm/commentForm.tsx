@@ -1,11 +1,11 @@
 import "~/global.css";
 import "./commentForm.css";
-import { $, component$, useClientEffect$ } from "@builder.io/qwik";
+import { component$, QRL, useClientEffect$ } from "@builder.io/qwik";
 import { UserData } from "~/auth/auth";
 
 export const submitComment = (
   evt: SubmitEvent,
-  postComment: (body: string) => void
+  postComment: QRL<(body: string) => void>
 ) => {
   const form = evt.target as HTMLElement;
   evt.preventDefault();
@@ -19,7 +19,7 @@ export const noop = () => {
 };
 
 export const CommentForm = component$(
-  (props: { user: UserData; postComment: (body: string) => void }) => {
+  (props: { user: UserData; postComment: QRL<(body: string) => void> }) => {
     const { user, postComment: postComment$ } = props;
     useClientEffect$(() => {
       document
